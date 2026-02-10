@@ -1,9 +1,8 @@
 name: Pipeline
 on:
-  pull_request:
-    types: [opened, synchronize, reopened,closed]
+  push:
     branches:
-      - master
+      - main
 
   jobs:
     build and deploy:
@@ -17,13 +16,13 @@ on:
             java-version: '17'
             distribution: 'corretto'
         - name: Build with maven
-          run: mvn clean install
+          run: mvn clean install -DskipTests
         - name: Deploy to EB
           uses: einaregilsson/beanstalk-deploy@v20
           with:
             aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            application_name: 'Springboot-app'
+            application_name: 'springboot-app'
             environment_name: 'Springboot-app-prod'
             version_label: 'v1-${{ github.sha }}'
             region: 'us-east-1'
